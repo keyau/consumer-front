@@ -1,9 +1,9 @@
-orbs:
-  aws-ecr: circleci/aws-ecr@6.7.0
 version: 2.1
+orbs:
+  codecov: codecov/codecov@3.0.0
 jobs:
   build:
-    working_directory: ~/example
+    working_directory: ~/consumer-front
     docker:
       - image: circleci/node:14.17.5-browsers
     steps:
