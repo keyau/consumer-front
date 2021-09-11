@@ -36,8 +36,8 @@ jobs:
           command: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless --reporters=junit --code-coverage
       # Lint the source code
       - run:
-         name: Linting
-         command: npm run lint
+          name: Linting
+          command: npm run lint
 
       # Upload code coverage on codeCov
       - codecov/upload:
