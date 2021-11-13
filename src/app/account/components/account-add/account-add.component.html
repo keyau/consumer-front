@@ -1,0 +1,22 @@
+<h3>Add account</h3>
+<div>
+  <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="example-form">
+    <p>
+      <mat-form-field appearance="outline">
+        <mat-label for="nbCredits">Nb credits</mat-label>
+        <input
+          matInput
+          type="number"
+          id="nbCredits"
+          formControlName="nbCredits"
+        />
+      </mat-form-field>
+    </p>
+
+    <div class="buttons-container">
+      <button mat-raised-button color="primary" type="submit">Create</button>
+
+      <button mat-raised-button (click)="goToAccounts()">Go to accounts</button>
+    </div>
+  </form>
+</div>
