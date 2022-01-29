@@ -17,8 +17,8 @@
         <button
           mat-icon-button
           color="primary"
-          (click)="viewAccount(row)"
           title="View Account"
+          routerLink="./{{ row._id }}"
         >
           <mat-icon>preview</mat-icon>
         </button>

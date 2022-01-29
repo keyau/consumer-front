@@ -1,0 +1,15 @@
+<h3>Account {{ account?._id }}</h3>
+<div>
+  <p>
+    <mat-label for="nbCredits">Nb credits</mat-label> :
+    {{ account?.nbCredits }}
+  </p>
+
+  <div class="buttons-container">
+    <button mat-raised-button color="primary" (click)="addSelection()">
+      Add selection
+    </button>
+
+    <button mat-raised-button (click)="goToAccounts()">Go to accounts</button>
+  </div>
+</div>

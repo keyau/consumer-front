@@ -4,7 +4,8 @@ import {
   HttpInterceptor,
   HttpRequest,
   HttpResponse,
-  HTTP_INTERCEPTORS,
+  // eslint-disable-next-line prettier/prettier
+  HTTP_INTERCEPTORS
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
@@ -13,8 +14,10 @@ import { Guid } from '../core/helpers/guid';
 
 // array in local storage for registered users
 let users: any[] = JSON.parse(localStorage.getItem('users') || '[]') || [];
-const accounts: any[] =
+let accounts: any[] =
   JSON.parse(localStorage.getItem('accounts') || '[]') || [];
+const selections: any[] =
+  JSON.parse(localStorage.getItem('selections') || '[]') || [];
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -35,8 +38,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       switch (true) {
         case url.endsWith('/accounts') && method === 'GET':
           return getAccounts();
+        // eslint-disable-next-line prettier/prettier
+        case url.match(/\/accounts\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/) && method === 'GET':
+          return getAccountById();
         case url.endsWith('/accounts') && method === 'POST':
           return createAccount();
+        case url.endsWith('/selections') && method === 'POST':
+          return createSelection();
         /*case url.endsWith('/users/authenticate') && method === 'POST':
                     return authenticate();
                 case url.endsWith('/users/register') && method === 'POST':
@@ -60,6 +68,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return ok(accounts);
     }
 
+    function getAccountById() {
+      const account = accounts.find((x) => x._id === guidFromUrl());
+      return ok(account);
+    }
+
     function createAccount() {
       const account = body;
 
@@ -67,6 +80,21 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       accounts.push(account);
       localStorage.setItem('accounts', JSON.stringify(accounts));
       return ok(account);
+    }
+
+    function createSelection() {
+      const selection = body;
+
+      const newAccounts = [...accounts];
+      const newAccount = newAccounts.find((x) => x._id === selection.accountId);
+      newAccount.nbCredits = --newAccount.nbCredits;
+      accounts = newAccounts;
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+
+      selection._id = Guid.createUuid();
+      selections.push(selection);
+      localStorage.setItem('selections', JSON.stringify(selections));
+      return ok(selection);
     }
 
     function authenticate() {
@@ -156,6 +184,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function idFromUrl() {
       const urlParts = url.split('/');
       return parseInt(urlParts[urlParts.length - 1]);
+    }
+
+    function guidFromUrl() {
+      const urlParts = url.split('/');
+      return urlParts[urlParts.length - 1];
     }
   }
 }

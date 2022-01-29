@@ -3,10 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Account } from '../models/account';
+import { Selection } from '../models/selection';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private accountsUrl = 'http://10.100.144.168:3000/api/accounts'; // URL to web api
+  private selectionsUrl = 'http://10.100.144.168:3000/api/selections'; // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -22,6 +24,14 @@ export class AccountService {
     );
   }
 
+  /** GET account by id from the server */
+  getAccount(id: string): Observable<Account> {
+    return this.http.get<Account>(`${this.accountsUrl}/${id}`).pipe(
+      tap((_) => this.log('fetched account by id')),
+      catchError(this.handleError<Account>('getAccount'))
+    );
+  }
+
   /** POST: add a new account to the server */
   addAccount(account: Account): Observable<Account> {
     return this.http
@@ -31,6 +41,19 @@ export class AccountService {
           this.log(`added account w/ id=${newAccount._id}`)
         ),
         catchError(this.handleError<Account>('addAccount'))
+      );
+  }
+
+  /** POST: add a new selection to the server */
+  addSelection(id: string): Observable<Selection> {
+    const body = { accountId: id };
+    return this.http
+      .post<Selection>(this.selectionsUrl, body, this.httpOptions)
+      .pipe(
+        tap((newSelection: Selection) =>
+          this.log(`added selection w/ id=${newSelection._id}`)
+        ),
+        catchError(this.handleError<Selection>('addSelection'))
       );
   }
 

@@ -22,8 +22,4 @@ export class AccountListComponent implements OnInit {
       .getAccounts()
       .subscribe((accounts) => (this.accounts = accounts));
   }
-
-  viewAccount(account: Account): void {
-    //do nothing
-  }
 }
